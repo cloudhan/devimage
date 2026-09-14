@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Expects CLUSTER, SCRATCH from cluster-local cluster_env.sh (not in git).
-source "$(dirname "$(realpath "$0")")/cluster_env.sh"
+repo_dir="$(dirname "$(realpath "$0")")"
+source "$repo_dir/cluster_env.sh"
 
 export ENROOT_CACHE_PATH=/tmp
 
@@ -16,4 +17,9 @@ enroot start -r --rw \
     --mount /home/guangyunh:/home/guangyunh \
     --mount "$SCRATCH:/workspace" \
     --mount "$SCRATCH:$SCRATCH" \
-    ${enroot_image}
+    --mount "$repo_dir:/workspace/devenv" \
+    "${enroot_image}" \
+    bash -c -i 'cd /workspace/devenv && exec fish -i'
+    # bash -c 'cd /workspace/devenv && exec fish -i'
+
+
